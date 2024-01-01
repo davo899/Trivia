@@ -4,13 +4,10 @@ import com.google.gson.*;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import network.roanoke.trivia.Trivia;
 import network.roanoke.trivia.Reward.Reward;
+import network.roanoke.trivia.Trivia;
+import network.roanoke.trivia.Reward.ItemReward;
 import network.roanoke.trivia.Reward.RewardManager;
-import network.roanoke.trivia.Utils.Messages;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -189,7 +186,7 @@ public class QuizManager {
         Reward reward = rewardManager.giveReward(player, currentQuestion);
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("{player}", player.getGameProfile().getName());
-        placeholders.put("{reward}", reward.itemDisplayName == null ? "REWARD_ERROR" : reward.itemDisplayName);
+        placeholders.put("{reward}", reward.getDisplayName() == null ? "REWARD_ERROR" : reward.getDisplayName());
         placeholders.put("{time}", String.valueOf(((System.currentTimeMillis() - questionTime) / 1000)));
 
         server.getPlayerManager().getPlayerList().forEach(serverPlayer -> serverPlayer.sendMessage(

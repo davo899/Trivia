@@ -3,6 +3,7 @@ package network.roanoke.trivia.Reward;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import net.minecraft.server.network.ServerPlayerEntity;
 import network.roanoke.trivia.Trivia;
 import network.roanoke.trivia.Quiz.Question;
@@ -23,18 +24,10 @@ public class RewardManager {
 
             // Loop over the questions in the difficulty level
             for (JsonElement rewardElem : questionsArr) {
-                JsonObject rewardObj = rewardElem.getAsJsonObject();
-
-                // Get the question text
-                String itemName = rewardObj.get("item_name").getAsString();
-                String itemDisplayName = rewardObj.get("display_name").getAsString();
-                Integer quantity = rewardObj.get("quantity").getAsInt();
 
                 // Create the TriviaQuestion object and add it to the list
-                Reward reward = new Reward(itemName, itemDisplayName, quantity);
-                if (reward.itemStack == null) {
-                    continue;
-                }
+                Reward reward = new RewardFactory().fromJson(rewardElem);
+                if (reward == null) continue;
                 if (rewardPools.containsKey(difficulty)) {
                     rewardPools.get(difficulty).add(reward);
                 } else {
@@ -56,11 +49,7 @@ public class RewardManager {
         if (rewardPools.containsKey(question.difficulty)) {
             ArrayList<Reward> rewards = rewardPools.get(question.difficulty);
             Reward reward = rewards.get((int) (Math.random() * rewards.size()));
-
-            if (!player.giveItemStack(reward.itemStack.copy())) {
-                player.dropItem(reward.itemStack.copy(), false);
-            }
-
+            reward.giveTo(player);
             return reward;
         }
         return null;

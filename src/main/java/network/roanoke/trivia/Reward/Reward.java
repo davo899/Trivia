@@ -1,29 +1,19 @@
 package network.roanoke.trivia.Reward;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import network.roanoke.trivia.Trivia;
+import net.minecraft.server.network.ServerPlayerEntity;
 
-public class Reward {
+public abstract class Reward {
 
-    public String itemName;
-    public String itemDisplayName;
-    public Integer quantity;
-    public ItemStack itemStack;
+    private final String displayName;
 
-    public Reward(String itemName, String itemDisplayName, Integer quantity) {
-        this.itemName = itemName;
-        this.itemDisplayName = itemDisplayName;
-        this.quantity = quantity;
-        this.itemStack = getItemStack(itemName);
-
-        Trivia.LOGGER.info("Reward item: " + itemDisplayName + " - itemName : " + itemName + " ItemStack: " + itemStack.toString());
+    public Reward(String displayName) {
+        this.displayName = displayName;
     }
 
-    // take the itemName and return an ItemStack
-    public ItemStack getItemStack(String itemName) {
-        return new ItemStack(Registries.ITEM.get(new Identifier(itemName)), quantity);
+    public String getDisplayName() {
+        return displayName;
     }
+
+    public abstract void giveTo(ServerPlayerEntity player);
 
 }
