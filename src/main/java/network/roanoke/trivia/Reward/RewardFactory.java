@@ -12,7 +12,8 @@ public class RewardFactory {
             case "item" -> {
                 String itemName = jsonObject.get("item_name").getAsString();
                 int quantity = jsonObject.get("quantity").getAsInt();
-                yield new ItemReward(displayName, itemName, quantity);
+                ItemReward reward = new ItemReward(displayName, itemName, quantity);
+                yield (reward.itemStack == null) ? null : reward;
             }
             case "command" -> {
                 String command = jsonObject.get("command").getAsString();
